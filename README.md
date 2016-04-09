@@ -15,15 +15,17 @@ mvn package
 
 ## How do I run it?
 
-Issue
 mvn exec:java
 
-Alternatively you can run it following the following steps
+Alternatively you can run it following these steps
+
 Build the application with 
+
 mvn package
 
 Then get the *-SNAPSHOT-jar-with-dependencies.jar which is under the target directory and copy it to your running directory.
 Run the jar file from the console issuing the following command:
+
 java -jar transactions-rest-VERSION-jar-with-dependencies.jar
 
 ##In detail the api spec looks like the following:
