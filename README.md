@@ -86,7 +86,7 @@ Get a list of all transaction ids that share the same specific type:
 O(1) because we cache the type on insertion
 
 Get the sum of all transactions that are transitively linked by their parent_id:
-O(N) worst case
+O(N) worst case. A simple cache stores each sum upon retrieval. The whole cache is invalidated on any insert
 
 ## License
 

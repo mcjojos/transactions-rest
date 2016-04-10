@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  *
  * Get the sum of all transactions that are transitively linked by their parent_id:
- * O(N) worst case
+ * O(N) worst case. A simple cache stores each sum upon retrieval. The whole cache is invalidated on any insert
  *
  * Updating an existing transaction is also not supported. As stated in the spec:
  * "transaction_id is a long specifying a new transaction"
@@ -47,6 +47,7 @@ public class TransactionHandler {
 
 	private final ConcurrentMap<Long, Transaction> transactions;
 	private final ConcurrentMap<String, Set<Long>> transactionTypes;
+	private final ConcurrentMap<Long, Double> sumCache;
 
 	public final static TransactionHandler INSTANCE = new TransactionHandler();
 
@@ -59,6 +60,7 @@ public class TransactionHandler {
 	private TransactionHandler() {
 		transactions = new ConcurrentSkipListMap<>();
 		transactionTypes = new ConcurrentHashMap<>();
+		sumCache = new ConcurrentHashMap<>();
 		ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 		readLock = readWriteLock.readLock();
 		writeLock = readWriteLock.writeLock();
@@ -94,6 +96,9 @@ public class TransactionHandler {
 		if (transaction.getParentId() == transaction.getId()) {
 			return false;
 		}
+
+		// after all sanity checks have succeeded INVALIDATE the cache we have for the sum
+		sumCache.clear();
 
 		transactions.put(transaction.getId(), transaction);
 
@@ -140,6 +145,11 @@ public class TransactionHandler {
 	 * @return the sum of the value of this transaction with all of it's children
 	 */
 	public double getSum(long transaction_id) {
+		// check cache first
+		if (sumCache.containsKey(transaction_id)) {
+			return sumCache.get(transaction_id);
+		}
+
 		double result = 0d;
 		Transaction transaction = transactions.get(transaction_id);
 		if (transaction != null) {
@@ -154,6 +164,7 @@ public class TransactionHandler {
 			result = doubleAdder.doubleValue();
 		}
 
+		sumCache.put(transaction_id, result);
 		return result;
 	}
 

@@ -11,12 +11,9 @@ Test a put request
 curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/10 -d "{ \"amount\": 5000, \"type\":\"cars\" }"
 
 Test another put request
-curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/10 -d "{ \"amount\": 10000, \"type\": \"shopping\"}"
 curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/10 -d "{ \"amount\":5000, \"type\":\"cars\" }"
 curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/11 -d "{ \"amount\": 10000, \"type\": \"shopping\", \"parent_id\": 10 }"
 curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/12 -d "{ \"amount\": 9000, \"type\": \"fishing\", \"parent_id\": 11 }"
-curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/11 -d "{ \"amount\": 10000, \"type\": \"shopping\", \"parent_id\": 12 }"
-curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/12 -d "{ \"amount\": 19000, \"type\": \"shopping\", \"parent_id\": 10 }"
 curl -H "Content-Type:application/json" -X PUT http://localhost:8089/transactionservice/transaction/10 -d "{ \"amount\":15000, \"type\":\"cars\" }"
 
 

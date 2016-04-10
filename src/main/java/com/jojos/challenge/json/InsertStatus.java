@@ -6,6 +6,8 @@ package com.jojos.challenge.json;
  * It should return the status as sting eg:
  * { "status": "ok" }
  *
+ * TODO define custom status messages
+ *
  * @author karanikasg@gmail.com.
  */
 public class InsertStatus {
