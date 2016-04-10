@@ -18,6 +18,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.DoubleAdder;
 
@@ -82,12 +83,14 @@ public class ResourceApiTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test3GetTypes() {
         targetAndTransactions.forEach(targetAndTransaction -> {
-            Response response = targetAndTransaction.typesWT.request(MediaType.TEXT_PLAIN).get();
+            Response response = targetAndTransaction.typesWT.request(MediaType.APPLICATION_JSON).get();
 
             Assert.assertEquals(200, response.getStatus());
-            Assert.assertEquals(getIdsForType(targetAndTransaction.transaction.getType()).toString(), response.readEntity(String.class));
+            Assert.assertTrue(String.format("Lists for type %s are not equal", targetAndTransaction.transaction.getType()),
+                    compareLists(getIdsForType(targetAndTransaction.transaction.getType()), response.readEntity(Collection.class)));
         });
     }
 
@@ -128,6 +131,7 @@ public class ResourceApiTest {
     private double getAmountForParent(long parentId) {
         for (TargetAndTransaction targetAndTransaction : targetAndTransactions) {
             if (targetAndTransaction.transaction.getParentId() == parentId) {
+                // although java doesn't support it it's good to remember about TAIL RECURSION
                 return targetAndTransaction.transaction.getAmount() + getAmountForParent(targetAndTransaction.id);
             }
         }
@@ -148,6 +152,19 @@ public class ResourceApiTest {
             this.transaction = transaction;
             this.id = id;
         }
+    }
+
+    private static <T extends Number> boolean compareLists(List<T> list1, Collection<T> list2) {
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+        List<T> tmpList = new ArrayList<>(list1);
+        for (T t : list2) {
+            if (!tmpList.remove(t.longValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void createDummyTransactions() {

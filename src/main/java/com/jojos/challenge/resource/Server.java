@@ -16,8 +16,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * todo: create javadoc
- * <p>
+ * The http server class. Starting and stoppnog the server is done here
+ *
  * Created by karanikasg@gmail.com.
  */
 public class Server {

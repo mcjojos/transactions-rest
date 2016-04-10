@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Class/json object that represents the transaction data.
  *
- * @author g.karanikas@iontrading.com.
+ * @author karanikasg@gmail.com.
  */
 public class Transaction {
 
@@ -56,16 +56,8 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public void setChildren(Set<Long> children) {
-		this.children = children;
-	}
-
 	public void addChild(long childId) {
 		children.add(childId);
-	}
-
-	public boolean removeChild(long childId) {
-		return children.remove(childId);
 	}
 
 	@Override

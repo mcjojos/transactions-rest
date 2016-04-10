@@ -15,7 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import java.util.Set;
 
 /**
  * The class defining the rest api
@@ -34,7 +34,7 @@ import java.util.List;
  * GET /transactionservice/sum/$transaction_id
  * Returns
  * { "sum": double }
- *  *
+ *
  * PUT /transactionservice/transaction/$transaction_id
  * Body:
  * { "amount":double,"type":string,"parent_id":long }
@@ -44,12 +44,14 @@ import java.util.List;
  * type is a string specifying a type of the transaction.
  * parent_id is an optional long that may specify the parent transaction of this transaction.
  *
- * @author g.karanikas@iontrading.com.
+ * @author karanikasg@gmail.com.
  */
 @Path("/transactionservice")
 public class ResourceApi {
 
 	private static final Logger log = LoggerFactory.getLogger(ResourceApi.class);
+
+	private static final TransactionHandler handler = TransactionHandler.INSTANCE;
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -65,7 +67,7 @@ public class ResourceApi {
 		Transaction transaction = new Transaction();
 
 		try {
-			transaction = TransactionHandler.INSTANCE.getTransaction(Long.parseLong(transaction_id));
+			transaction = handler.getTransaction(Long.parseLong(transaction_id));
 			log.debug("GET returning {}", transaction);
 		} catch (NumberFormatException e) {
 			log.error("Unable to complete GET transaction/{}. {}", transaction_id, e.getMessage());
@@ -74,14 +76,14 @@ public class ResourceApi {
 	}
 
 	@GET @Path("types/{type}")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getTypes(@PathParam("type") String type) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<Long> getTypes(@PathParam("type") String type) {
 		log.debug("GET types/{}", type);
 
-		List<Long> types = TransactionHandler.INSTANCE.getTypes(type);
+		Set<Long> types = handler.getTypes(type);
 
 		log.debug("GET returning {}", types.toString());
-		return types.toString();
+		return types;
 	}
 
 	@GET @Path("sum/{transaction_id:\\d+}")
@@ -92,9 +94,11 @@ public class ResourceApi {
 		Sum sum = new Sum();
 
 		try {
-			sum = new Sum(TransactionHandler.INSTANCE.getSum(Long.parseLong(transaction_id)));
+			sum = new Sum(handler.getSum(Long.parseLong(transaction_id)));
 		} catch (NumberFormatException e) {
 			log.error("Unable to calculate sum for {}. Reason {}", transaction_id, e.getMessage());
+		} catch ( Exception e) {
+			e.printStackTrace();
 		}
 
 		log.debug("GET returning {}", sum.toString());
@@ -110,7 +114,7 @@ public class ResourceApi {
 			transaction.setId(Long.parseLong(transaction_id));
 			log.debug("PUT transaction/{} {}", transaction_id, transaction);
 
-			result = TransactionHandler.INSTANCE.insert(transaction);
+			result = handler.insert(transaction);
 
 		} catch (NumberFormatException e) {
 			log.error("Unable to complete PUT transaction/{}. {}", transaction_id, e.getMessage());

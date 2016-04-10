@@ -6,7 +6,7 @@ package com.jojos.challenge.json;
  * It should return the status as sting eg:
  * { "status": "ok" }
  *
- * @author g.karanikas@iontrading.com.
+ * @author karanikasg@gmail.com.
  */
 public class InsertStatus {
 

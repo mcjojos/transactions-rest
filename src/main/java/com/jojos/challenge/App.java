@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 /**
  * The application's main entry point.
  *
- * @author g.karanikas@iontrading.com.
+ * @author karanikasg@gmail.com.
  */
-@SuppressWarnings("restriction")
 public class App {
 
 	private static final Logger log = LoggerFactory.getLogger(App.class);
