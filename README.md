@@ -28,7 +28,7 @@ Run the jar file from the console issuing the following command:
 
 java -jar transactions-rest-VERSION-jar-with-dependencies.jar
 
-##In detail the api spec looks like the following:
+## In detail the api spec looks like the following:
   
   PUT /transactionservice/transaction/$transaction_id   
   Body:   
@@ -72,6 +72,21 @@ A simple way to test the application is to use curl (check https://curl.haxx.se/
 You can find some usage examples of the tool specifically for our application under examples/curl_usage_examples.txt
 
 ENJOY!
+
+
+## Asymptotic Behaviour
+
+Insert a transaction: O(N) just because we allow a transaction with a parent_id referencing to a non-existing transaction.
+If we weren't allowing this condition we'd have O(1).
+
+Retrieve a transaction:
+O(1)
+
+Get a list of all transaction ids that share the same specific type:
+O(1) because we cache the type on insertion
+
+Get the sum of all transactions that are transitively linked by their parent_id:
+O(N) worst case
 
 ## License
 
